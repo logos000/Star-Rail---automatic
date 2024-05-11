@@ -30,8 +30,24 @@ def initial():
             arr[8] = position()
         case '退出按钮':
             arr[9] = position()
-        case '每日奖励':
+        case '每日':
             arr[10] = position()
+        case '每日任务':
+            arr[11] = position()
+        case '每日奖励':
+            arr[12] = position()
+        case '委托':
+            arr[13] = position()
+        case '收取委托':
+            arr[14] = position()
+        case '再次派遣':
+            arr[15] = position()
+        case '…的按钮':
+            arr[16] = position()
+        case '漫游签证':
+            arr[17] = position()
+        case '助战奖励':
+            arr[18] = position()
         case '保存':
             np.save('position', arr)
             return
@@ -48,8 +64,16 @@ def save_default():
     arr[7] = [3236, 1967]       #'副本入口按钮'
     arr[8] = [2450, 1890]       #'再来一次按钮'
     arr[9] = [1423, 1895]       #'退出按钮'
-    arr[10] = [870, 1652]       #'每日奖励'
-    arr[11] = [3450, 728]       #'委托'
+    arr[10] = [966, 425]        #'每日'
+    arr[11] = [870, 1652]       #'每日任务'
+    arr[12] = [3222, 620]       #'每日奖励'
+    arr[13] = [3455, 725]       #'委托'
+    arr[14] = [965, 1815]       #'收取委托'
+    arr[15] = [2501, 1605]      #'再次派遣'
+    arr[16] = [3505, 205]       #'…的按钮'
+    arr[17] = [3165, 275]       #'漫游签证'
+    arr[18] = [3298, 530]       #'助战奖励'
+    arr[19] = [3735, 95]        #手机右上角的×
     np.save('position', arr)
 
 def position():
@@ -80,7 +104,7 @@ def on_click(x, y, button, pressed):
 
 if (__name__ == "__main__"):
     save_default()
-    botton = pg.confirm(text='确定初始化吗',title='初始化坐标',buttons=['yes','no'])
+    botton = pg.confirm(text='确定初始化坐标吗',title='初始化坐标',buttons=['yes','no'])
     if botton == 'yes':
         initial()
         

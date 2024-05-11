@@ -11,6 +11,7 @@ import os
 
 def run():
     pg.hotkey("win","q")
+    time.sleep(1)
     pyperclip.copy("应用: 崩坏：星穹铁道")
     pg.hotkey("ctrl","v")
     time.sleep(1)
@@ -50,14 +51,12 @@ def task():     #执行自动化任务
     print("login sucess")
     time.sleep(1)
     
-    yiqi()
-    
+    #yiqi()
+    time.sleep(3)
     meiri()
-    
+    time.sleep(3)
     over()
-    
-def zhuzhan():      #这个是助战
-    return    
+
 
 def zhinan():    #这个是指南
     pg.press("esc")
@@ -66,10 +65,6 @@ def zhinan():    #这个是指南
     pg.click(loc_x, loc_y) 
     time.sleep(1)
     print("zhinan succeed")
-    
-def weituo():       #这个是委托
-    loc_x, loc_y = arr[11]
-    pg.click(loc_x, loc_y)
 
 
 def yiqi(num=1, repeat = 6):        #这个是遗器，n代表从上往下数第几个遗器本（从1开始）
@@ -125,14 +120,59 @@ def yiqi(num=1, repeat = 6):        #这个是遗器，n代表从上往下数第
     time.sleep(1)
     pg.click()
     time.sleep(1)
+
+def zhuzhan():      #这个是助战
+    pg.press('esc')
+    time.sleep(1)
+    loc_x, loc_y = arr[16]
+    pg.click(loc_x, loc_y)   #…按钮
+    time.sleep(1)
+    loc_x, loc_y = arr[17]
+    pg.click(loc_x, loc_y)  #漫游签证
+    time.sleep(1)
+    loc_x, loc_y = arr[18]
+    pg.click(loc_x, loc_y)  #助战奖励
+    time.sleep(1)
+    loc_x, loc_y = arr[19]
+    pg.click(loc_x, loc_y)  #退出
+    time.sleep(1)
+    pg.click()          
+    time.sleep(1)
+    pg.click()        #退回游戏界面
+
+def weituo():       #这个是委托
+    pg.press('esc')
+    time.sleep(1)
+    loc_x, loc_y = arr[13]
+    pg.click(loc_x, loc_y)      #委托
+    time.sleep(1)
+    loc_x, loc_y = arr[14]
+    pg.click(loc_x, loc_y)      #收取委托
+    time.sleep(1)
+    loc_x, loc_y = arr[15]      #再次派遣
+    pg.click(loc_x, loc_y)
+    time.sleep(1)  
+    pg.press('esc')
+    time.sleep(1)
+    pg.press('esc')        #退回游戏界面  
     
-def meiri():        #这个是每日
+def meiri():        #这个是每日奖励
     zhinan()
-    loc_x, loc_y = arr[10]
-    pg.moveTo(loc_x, loc_y)
-    for i in range(5):
+    loc_x, loc_y = arr[10]  #打开每日
+    pg.click(loc_x, loc_y)
+    time.sleep(1)
+    loc_x, loc_y = arr[11]
+    pg.moveTo(loc_x, loc_y)     #点击每日任务
+    time.sleep(1)
+    for i in range(6):
         pg.click()
         time.sleep(1)
+    loc_x, loc_y = arr[12]  #点击每日奖励
+    pg.click(loc_x, loc_y)
+    time.sleep(1)
+    pg.press('esc')
+    time.sleep(1)
+    pg.press('esc')        #退回游戏界面
 
 def over():
     pg.hotkey("alt", "f4")
@@ -154,8 +194,8 @@ def moniter( file_name, flag = True): #flag 为 true 时判断何时相同， �
     similarity = 0
     
     shot = ImageGrab.grab()
-    shot.save("./tmp/screen.png")
-    screen = cv2.imread("./tmp/screen.png")
+    shot.save("./tmp/screen.jpg")
+    screen = cv2.imread("./tmp/screen.jpg")
     target = cv2.imread(file_name)
     target = cv2.resize(target, (screen.shape[1], screen.shape[0]), interpolation=cv2.INTER_AREA)
     
@@ -163,13 +203,13 @@ def moniter( file_name, flag = True): #flag 为 true 时判断何时相同， �
     gray_screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
     while True:          
         similarity, _ = ssim(gray_target, gray_screen, full=True)
-        #print(similarity)
+        print(similarity)
         if (flag and similarity>0.85) or ((not flag) and similarity<0.7):
             return
-        time.sleep(1)
+        time.sleep(0.5) 
         shot = ImageGrab.grab()
-        shot.save("./tmp/screen.png", "PNG")
-        screen = cv2.imread("./tmp/screen.png")
+        shot.save("./tmp/screen.jpg")
+        screen = cv2.imread("./tmp/screen.jpg")
         gray_screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
 
 def diff(img1, img2):
@@ -179,3 +219,8 @@ def diff(img1, img2):
 if (__name__ == "__main__"):
     arr = np.load('position.npy')       #读取各个关键坐标
     run();
+    
+    #test
+    time.sleep(3)
+    #weituo()
+    #zhuzhan()
