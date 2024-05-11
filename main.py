@@ -25,18 +25,18 @@ def run():
     global scal_x, scal_y
     scal_x = size_[0]/3840
     scal_y = size_[1]/2160
-    start_x = 2470*scal_x
-    start_y = 1410*scal_y
+    
+    loc_x, loc_y = arr[0]
     #start_x, start_y = pg.position()
     #print(start_x, start_y)
     #pg.moveTo(start_x, start_y)
     time.sleep(3)
-    pg.click(start_x, start_y)
+    pg.click(loc_x, loc_y)
     
     start =time.process_time()
     moniter("./picture/start.png")
     end = time.process_time()
-    if ((end - start) < 15):    #判断是否识别出错了，根据每个人载入时间而定
+    if ((end - start) < 15):    #判断是否识别过短出错了，根据每个人载入时间而定
         time.sleep(5)
     print("Honkai: Star Rail, START!")
     pg.click()
@@ -62,68 +62,64 @@ def zhuzhan():      #这个是助战
 def zhinan():    #这个是指南
     pg.press("esc")
     time.sleep(2)
-    loc_x = 2686 * scal_x
-    loc_y = 1512 * scal_y
+    loc_x, loc_y = arr[1]
     pg.click(loc_x, loc_y) 
     time.sleep(1)
     print("zhinan succeed")
     
 def weituo():       #这个是委托
-    loc_x = 3450 * scal_x
-    loc_y = 728 * scal_y
+    loc_x, loc_y = arr[11]
     pg.click(loc_x, loc_y)
 
 
 def yiqi(num=1, repeat = 6):        #这个是遗器，n代表从上往下数第几个遗器本（从1开始）
     zhinan()
-    loc_x = 1195 * scal_x
-    loc_y = 430 * scal_y
+
+    loc_x, loc_y = arr[2]
     pg.click(loc_x, loc_y)  #这个是副本
     time.sleep(1)
-    loc_x = 877 * scal_x
-    loc_y = 1738 * scal_y
+    loc_x, loc_y = arr[3]
     pg.click(loc_x, loc_y)  #这个是遗器本
     time.sleep(1)
     
-    loc_x = 3103 * scal_x
-    loc_y = 836 * scal_y
+    loc_x, loc_y = arr[4]
     pg.moveTo(loc_x, loc_y)  #这个是第一个遗器
     time.sleep(1)
     
     num = 9
     t = num
     
+    dy = arr[5][1] - arr[4][1]      #计算两个相邻副本的y值差
     while (t>1):
         pg.mouseDown()
-        pg.move(0, int(-420*scal_y), 1)
+        pg.move(0, -(dy+25), 1)     #由于滚轮有误差，这里25需要微调
         time.sleep(1)
         pg.mouseUp()
         pg.moveTo(loc_x, loc_y)
         t-=1
     if (num > 6):  
-        pg.moveTo(loc_x, (922+(num-7)*395) * scal_y)  
+        pg.moveTo(loc_x, (arr[6][1]-(9-num)*dy))    #从最后一个副本的坐标向上减
     
     time.sleep(1)
     pg.click()
     time.sleep(5)
     
-    loc_x = 3236 * scal_x
-    loc_y = 1967 * scal_y
+
+    loc_x, loc_y = arr[7]
     pg.moveTo(loc_x, loc_y)  #副本入口
     pg.click()
     time.sleep(2)
     pg.click()
     
-    loc_x = 2450 * scal_x
-    loc_y = 1890 * scal_y
+    loc_x, loc_y = arr[8]    
     pg.moveTo(loc_x, loc_y)
     while (repeat>1):       #再来一次
         time.sleep(90)
         pg.click()
         repeat -= 1
     
-    loc_x = 1423 * scal_x
-    loc_y = 1895 * scal_y
+
+    loc_x, loc_y = arr[9]
     pg.moveTo(loc_x, loc_y)
     pg.click()
     time.sleep(1)
@@ -132,8 +128,7 @@ def yiqi(num=1, repeat = 6):        #这个是遗器，n代表从上往下数第
     
 def meiri():        #这个是每日
     zhinan()
-    loc_x = 870 * scal_x
-    loc_y = 1652 * scal_y
+    loc_x, loc_y = arr[10]
     pg.moveTo(loc_x, loc_y)
     for i in range(5):
         pg.click()
@@ -182,4 +177,5 @@ def diff(img1, img2):
     return coef
 
 if (__name__ == "__main__"):
+    arr = np.load('position.npy')       #读取各个关键坐标
     run();
