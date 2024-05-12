@@ -8,7 +8,7 @@ def initial():
    arr = np.load('position.npy')
    global loc_x, loc_y
    while True:
-       botton = pg.confirm(text='请选择你想要更改的坐标',title='初始化坐标',buttons=['启动按钮','指南','副本','遗器本','第一个遗器','第二个遗器', '保存'])
+       botton = pg.confirm(text='请选择你想要更改的坐标',title='初始化坐标',buttons=['启动按钮','指南','副本','遗器本','第一个遗器','第二个遗器','最后一个遗器','副本入口按钮','再来一次按钮','退出按钮','每日','每日任务','每日奖励','委托','收取委托','再次派遣','…的按钮','漫游签证','助战奖励','保存'])
        match  botton:
         case '启动按钮':
             arr[0] = position()     
