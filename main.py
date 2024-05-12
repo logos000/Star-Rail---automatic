@@ -10,6 +10,8 @@ import sys
 import os
 
 def run():
+    global num
+    num = int(pg.prompt(text='请输入想要刷的遗器本',title='PyAutoGUI消息框',default='9'))
     pg.hotkey("win","q")
     time.sleep(1)
     pyperclip.copy("应用: 崩坏：星穹铁道")
@@ -35,14 +37,18 @@ def run():
     pg.click(loc_x, loc_y)
     
     start =time.process_time()
-    moniter("./picture/start.png")
+    moniter("./picture/start.png")      #等待直到开始界面
     end = time.process_time()
     if ((end - start) < 15):    #判断是否识别过短出错了，根据每个人载入时间而定
         time.sleep(5)
     print("Honkai: Star Rail, START!")
     pg.click()
-    
-    time.sleep(10)
+
+    time.sleep(10)    
+    pg.click()    
+    time.sleep(5)
+    pg.click()
+    time.sleep(5)
     task()
 
 def task():     #执行自动化任务
@@ -51,11 +57,11 @@ def task():     #执行自动化任务
     print("login sucess")
     time.sleep(1)
     
-    #yiqi()
+    yiqi()
     time.sleep(3)
-    meiri()
+    #meiri()
     time.sleep(3)
-    over()
+    shutdown()
 
 
 def zhinan():    #这个是指南
@@ -67,7 +73,7 @@ def zhinan():    #这个是指南
     print("zhinan succeed")
 
 
-def yiqi(num=1, repeat = 6):        #这个是遗器，n代表从上往下数第几个遗器本（从1开始）
+def yiqi(repeat = 6):        #这个是遗器，n代表从上往下数第几个遗器本（从1开始）
     zhinan()
 
     loc_x, loc_y = arr[2]
@@ -81,13 +87,11 @@ def yiqi(num=1, repeat = 6):        #这个是遗器，n代表从上往下数第
     pg.moveTo(loc_x, loc_y)  #这个是第一个遗器
     time.sleep(1)
     
-    num = 9
-    t = num
-    
+    t = num    
     dy = arr[5][1] - arr[4][1]      #计算两个相邻副本的y值差
     while (t>1):
         pg.mouseDown()
-        pg.move(0, -(dy+25), 1)     #由于滚轮有误差，这里25需要微调
+        pg.move(0, -(dy+25), 1)     #由于滚轮有误差，(这里25需要微调)
         time.sleep(1)
         pg.mouseUp()
         pg.moveTo(loc_x, loc_y)
@@ -99,7 +103,6 @@ def yiqi(num=1, repeat = 6):        #这个是遗器，n代表从上往下数第
     pg.click()
     time.sleep(5)
     
-
     loc_x, loc_y = arr[7]
     pg.moveTo(loc_x, loc_y)  #副本入口
     pg.click()
@@ -109,10 +112,12 @@ def yiqi(num=1, repeat = 6):        #这个是遗器，n代表从上往下数第
     loc_x, loc_y = arr[8]    
     pg.moveTo(loc_x, loc_y)
     while (repeat>1):       #再来一次
-        time.sleep(90)
-        pg.click()
+        time.sleep(50)
+        moniter('./picture/yiqi1.png')
+        pg.click(loc_x, loc_y)
         repeat -= 1
-    
+        if (diff('./picture/yiqi2.png') >0.85):
+            break;   
 
     loc_x, loc_y = arr[9]
     pg.moveTo(loc_x, loc_y)
@@ -174,7 +179,7 @@ def meiri():        #这个是每日奖励
     time.sleep(1)
     pg.press('esc')        #退回游戏界面
 
-def over():
+def shutdown():
     pg.hotkey("alt", "f4")
     
     
@@ -186,13 +191,21 @@ def over():
 def loc( file_name):
     return pg.locateOnScreen(file_name)
 
-def moniter( file_name, flag = True): #flag 为 true 时判断何时相同， 为false时判断何时不同
+def moniter(file_name,similar = 0.85, flag = True): #flag 为 true 时判断何时相同， 为false时判断何时不同
     
     #region = (0, 0, self.size[0], self.size[1])  # 示例：左上角(0, 0)，右下角(800, 600)
     # 初始化截图
     #shot = ImageGrab.grab(bbox=region)  # 截取指定区域的屏幕图像，并赋值给shot变量
-    similarity = 0
-    
+
+    while True:          
+        similarity = diff(file_name)
+        print('similarity: ',similarity)
+        if (flag and similarity>similar) or ((not flag) and similarity<similar):
+            return
+        time.sleep(0.5) 
+        
+def diff(file_name):        #判断当前屏幕与目标图片相似度
+    coef = 0
     shot = ImageGrab.grab()
     shot.save("./tmp/screen.jpg")
     screen = cv2.imread("./tmp/screen.jpg")
@@ -201,19 +214,7 @@ def moniter( file_name, flag = True): #flag 为 true 时判断何时相同， �
     
     gray_target = cv2.cvtColor(target, cv2.COLOR_BGR2GRAY)
     gray_screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-    while True:          
-        similarity, _ = ssim(gray_target, gray_screen, full=True)
-        print(similarity)
-        if (flag and similarity>0.85) or ((not flag) and similarity<0.7):
-            return
-        time.sleep(0.5) 
-        shot = ImageGrab.grab()
-        shot.save("./tmp/screen.jpg")
-        screen = cv2.imread("./tmp/screen.jpg")
-        gray_screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-
-def diff(img1, img2):
-    coef, _ = ssim(img1, img2, full=True)
+    coef, _ = ssim(gray_target, gray_screen, full=True)
     return coef
 
 if (__name__ == "__main__"):
@@ -222,5 +223,6 @@ if (__name__ == "__main__"):
     
     #test
     time.sleep(3)
+    #print(diff('./picture/yiqi2.png'))
     #weituo()
     #zhuzhan()
